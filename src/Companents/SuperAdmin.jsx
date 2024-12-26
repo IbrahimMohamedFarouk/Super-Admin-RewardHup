@@ -2,40 +2,31 @@
     import { useState, useEffect } from "react";
     import axios from "axios";
 
+
     const SuperAdminDashboard = () => {
-    const [offers, setOffers] = useState([{
-        id:1,
-        title: "amer",
-        desc: "sbfxfbxfbxf",
-        image: "/vite.svg", // Store image file instead of URL
-        point: "100",
-        expiryDate: "55",
-    },
-    {
-        id:21,
-        title: "amer",
-        desc: "sbfxfbxfbxf",
-        image: "/vite.svg", // Store image file instead of URL
-        point: "800",
-        expiryDate: "55",
-    }
-]); // State to store offers
+    const [offers, setOffers] = useState([]); // State to store offers
     const [form, setForm] = useState({
         title: "",
-        desc: "",
+        description: "",
         image: null, // Store image file instead of URL
-        point: "",
+        points: "",
         expiryDate: "",
     });
 
     // Fetch offers from the backend
     useEffect(() => {
         axios
-        .get("/api/offers")
-        .then((response) => setOffers(response.data))
+        .get("http://localhost:3000/api/offers")
+        .then((response) => {
+            const transformedOffers = response.data.map((offer) => ({
+                ...offer,
+                image: `http://localhost:3000${offer.imageUrl}`, // Prefix with your backend's base URL
+            }));
+            setOffers(transformedOffers);
+        })
         .catch((error) => console.error("Error fetching offers:", error));
     }, []);
-
+    
     // Handle input change
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -68,21 +59,21 @@
         e.preventDefault();
         const formData = new FormData();
         formData.append("title", form.title);
-        formData.append("desc", form.desc);
-        formData.append("point", form.point);
+        formData.append("description", form.description);
+        formData.append("points", form.points);
         formData.append("expiryDate", form.expiryDate);
         if (form.image) {
         formData.append("image", form.image);
         }
 
         try {
-        const response = await axios.post("/api/offers", formData, {
+        const response = await axios.post("http://localhost:3000/api/offers", formData, {
             headers: {
             "Content-Type": "multipart/form-data",
             },
         });
         setOffers([...offers, response.data]);
-        setForm({ title: "", desc: "", image: null, point: "" });
+        setForm({ title: "", description: "", image: null, points: "" });
         } catch (error) {
         console.error("Error adding offer:", error);
         }
@@ -92,7 +83,7 @@
         <div className="min-h-screen bg-primary p-4 rounded-lg ">
             <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
                 <div className="w-[70%] flex items-center justify-center pr-20">
-                    <img src="../../public/rewardhup-high-resolution-logo-transparent.png" alt="logo" className=" w-[100%] " />
+                    <img src="/rewardhup-high-resolution-logo-transparent.png" alt="logo" className=" w-[100%] " />
                 </div>
                 <div  className="w-full ">
                     <h1 className="text-2xl font-bold text-center mb-4">Super Admin Dashboard</h1>
@@ -114,8 +105,9 @@
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-2">Description</label>
                         <textarea
-                        name="desc"
-                        value={form.desc}
+                        type="text"
+                        name="description"
+                        value={form.description}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border rounded text-textInput"
                         required
@@ -146,8 +138,8 @@
                         <label className="block text-gray-700 mb-2">Point (Optional)</label>
                         <input
                         type="number"
-                        name="point"
-                        value={form.point}
+                        name="points"
+                        value={form.points}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border rounded text-textInput"
                         />
@@ -184,9 +176,9 @@
                             >
                             <div className="flex justify-center items-center flex-col">
                                 <h3 className="text-lg font-bold">{offer.title}</h3>
-                                <p>{offer.desc}</p>
-                                {offer.image && <img src={offer.image} alt="Offer" className="w-16 h-16 mt-2 rounded" />}
-                                {offer.point && <p className="text-gray-600">Points: {offer.point}</p>}
+                                <p>{offer.description}</p>
+                                {offer.image && <img src={`http://localhost:3000${offer.imageUrl}`} alt="Offer" className="w-16 h-16 mt-2 rounded" />}
+                                {offer.points && <p className="text-gray-600">Points: {offer.points}</p>}
                                 {offer.expiryDate && <p className="text-gray-600">Expiry Date: {offer.expiryDate}</p>}
                             </div>
                             </li>
