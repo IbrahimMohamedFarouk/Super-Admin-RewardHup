@@ -11,7 +11,10 @@ export default {
       btnColor:'#81c784',
       btnColorHover:'#81c745',
       textColor:'#ffff',
-      textInput:'#000'
+      textInput:'#000',
+      deleteColor:'#ef4444',
+      deleteColorHover:'#ef4422'
+
     }
   },
   plugins: [],

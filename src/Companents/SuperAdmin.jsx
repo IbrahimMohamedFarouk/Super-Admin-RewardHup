@@ -1,10 +1,17 @@
-    // Import necessary dependencies
     import { useState, useEffect } from "react";
     import axios from "axios";
 
-
     const SuperAdminDashboard = () => {
-    const [offers, setOffers] = useState([]); // State to store offers
+    const [offers, setOffers] = useState([
+        {
+            id:1,
+            title: "CSC",
+            description: "ScScSC",
+            image: null, // Store image file instead of URL
+            points: "SCSc",
+            expiryDate: "Scsc",
+        }
+    ]); // State to store offers
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -12,6 +19,7 @@
         points: "",
         expiryDate: "",
     });
+    const [editingOffer, setEditingOffer] = useState(null); // State to track which offer is being edited
 
     // Fetch offers from the backend
     useEffect(() => {
@@ -19,14 +27,14 @@
         .get("http://localhost:3000/api/offers")
         .then((response) => {
             const transformedOffers = response.data.map((offer) => ({
-                ...offer,
-                image: `http://localhost:3000${offer.imageUrl}`, // Prefix with your backend's base URL
+            ...offer,
+            image: `http://localhost:3000${offer.imageUrl}`, // Prefix with your backend's base URL
             }));
             setOffers(transformedOffers);
         })
         .catch((error) => console.error("Error fetching offers:", error));
     }, []);
-    
+
     // Handle input change
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -54,7 +62,7 @@
         e.preventDefault();
     };
 
-    // Add Offer
+    // Add Offer or Update Offer
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -67,127 +75,193 @@
         }
 
         try {
-        const response = await axios.post("http://localhost:3000/api/offers", formData, {
-            headers: {
-            "Content-Type": "multipart/form-data",
-            },
-        });
-        setOffers([...offers, response.data]);
-        setForm({ title: "", description: "", image: null, points: "" });
+        let response;
+        if (editingOffer) {
+            // Update existing offer
+            response = await axios.put(
+            `http://localhost:3000/api/offers/${editingOffer.id}`,
+            formData,
+            {
+                headers: {
+                "Content-Type": "multipart/form-data",
+                },
+            }
+            );
+            setOffers(
+            offers.map((offer) =>
+                offer.id === editingOffer.id ? response.data : offer
+            )
+            );
+        } else {
+            // Add new offer
+            response = await axios.post(
+            "http://localhost:3000/api/offers",
+            formData,
+            {
+                headers: {
+                "Content-Type": "multipart/form-data",
+                },
+            }
+            );
+            setOffers([...offers, response.data]);
+        }
+        setForm({ title: "", description: "", image: null, points: "", expiryDate: "" });
+        setEditingOffer(null); // Reset editing state after submit
         } catch (error) {
-        console.error("Error adding offer:", error);
+        console.error("Error submitting offer:", error);
+        }
+    };
+
+    // Handle offer deletion
+    const handleDelete = async (id) => {
+        try {
+        await axios.delete(`http://localhost:3000/api/offers/${id}`);
+        setOffers(offers.filter((offer) => offer.id !== id));
+        } catch (error) {
+        console.error("Error deleting offer:", error);
         }
     };
 
     return (
-        <div className="min-h-screen bg-primary p-4 rounded-lg ">
-            <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
-                <div className="w-[70%] flex items-center justify-center pr-20">
-                    <img src="/rewardhup-high-resolution-logo-transparent.png" alt="logo" className=" w-[100%] " />
-                </div>
-                <div  className="w-full ">
-                    <h1 className="text-2xl font-bold text-center mb-4">Super Admin Dashboard</h1>
-
-                    {/* Form Section */}
-                    <form onSubmit={handleSubmit} className="mb-6">
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Title</label>
-                        <input
-                        type="text"
-                        name="title"
-                        value={form.title}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded text-textInput"
-                        required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Description</label>
-                        <textarea
-                        type="text"
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded text-textInput"
-                        required
-                        ></textarea>
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Image</label>
-                        <div
-                        className="w-full px-3 py-2 border rounded bg-gray-50 text-center cursor-pointer"
-                        onDrop={handleImageDrop}
-                        onDragOver={handleDragOver}
-                        >
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="hidden text-textInput"
-                            id="imageInput"
-                        />
-                        <label htmlFor="imageInput" className="cursor-pointer text-textInput">
-                            {form.image ? form.image.name : "Click to upload or drag and drop an image here"}
-                        </label>
-                        </div>
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Point (Optional)</label>
-                        <input
-                        type="number"
-                        name="points"
-                        value={form.points}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded text-textInput"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block  mb-2">Expiry Date (Optional)</label>
-                        <input
-                        type="date"
-                        name="expiryDate"
-                        value={form.expiryDate}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded text-textInput "
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded hover:bg-blue-600 duration-75"
-                    >
-                        Add Offer
-                    </button>
-                    </form>
-
-                    {/* Offers List */}
-                    <div>
-                    <h2 className="text-xl font-bold mb-4">Offers</h2>
-                    {offers.length === 0 ? (
-                        <p className="text-gray-500">No offers available.</p>
-                    ) : (
-                        <ul className="space-y-4">
-                        {offers.map((offer) => (
-                            <li
-                            key={offer.id}
-                            className="p-4 border rounded shadow flex justify-center items-center"
-                            >
-                            <div className="flex justify-center items-center flex-col">
-                                <h3 className="text-lg font-bold">{offer.title}</h3>
-                                <p>{offer.description}</p>
-                                {offer.image && <img src={`http://localhost:3000${offer.imageUrl}`} alt="Offer" className="w-16 h-16 mt-2 rounded" />}
-                                {offer.points && <p className="text-gray-600">Points: {offer.points}</p>}
-                                {offer.expiryDate && <p className="text-gray-600">Expiry Date: {offer.expiryDate}</p>}
-                            </div>
-                            </li>
-                        ))}
-                        </ul>
-                    )}
-                    </div>
-                </div>
+        <div className="min-h-screen bg-primary p-4 rounded-lg">
+        <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
+            <div className="w-[70%] flex items-center justify-center pr-20">
+            <img
+                src="/rewardhup-high-resolution-logo-transparent.png"
+                alt="logo"
+                className="w-[100%]"
+            />
             </div>
+            <div className="w-full">
+            <h1 className="text-2xl font-bold text-center mb-4">
+                Super Admin Dashboard
+            </h1>
+
+            {/* Form Section */}
+            <form onSubmit={handleSubmit} className="mb-6">
+                <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Title</label>
+                <input
+                    type="text"
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded text-textInput"
+                    required
+                />
+                </div>
+
+                <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Description</label>
+                <textarea
+                    type="text"
+                    name="description"
+                    value={form.description}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded text-textInput"
+                    required
+                ></textarea>
+                </div>
+
+                <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Image</label>
+                <div
+                    className="w-full px-3 py-2 border rounded bg-gray-50 text-center cursor-pointer"
+                    onDrop={handleImageDrop}
+                    onDragOver={handleDragOver}
+                >
+                    <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden text-textInput"
+                    id="imageInput"
+                    />
+                    <label htmlFor="imageInput" className="cursor-pointer text-textInput">
+                    {form.image ? form.image.name : "Click to upload or drag and drop an image here"}
+                    </label>
+                </div>
+                </div>
+
+                <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Point (Optional)</label>
+                <input
+                    type="number"
+                    name="points"
+                    value={form.points}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded text-textInput"
+                />
+                </div>
+                <div className="mb-4">
+                <label className="block mb-2">Expiry Date (Optional)</label>
+                <input
+                    type="date"
+                    name="expiryDate"
+                    value={form.expiryDate}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded text-textInput"
+                />
+                </div>
+                <button
+                type="submit"
+                className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded hover:bg-blue-600 duration-75"
+                >
+                {editingOffer ? "Update Offer" : "Add Offer"}
+                </button>
+            </form>
+
+            {/* Offers List */}
+            <div>
+                <h2 className="text-xl font-bold mb-4">Offers</h2>
+                {offers.length === 0 ? (
+                <p className="text-gray-500">No offers available.</p>
+                ) : (
+                <ul className="space-y-4">
+                    {offers.map((offer) => (
+                    <li
+                        key={offer.id}
+                        className="p-4 border rounded shadow flex justify-between items-center"
+                    >
+                        <div>
+                        <h3 className="text-lg font-bold">{offer.title}</h3>
+                        <p>{offer.description}</p>
+                        {offer.image && (
+                            <img
+                            src={offer.image}
+                            alt="Offer"
+                            className="w-16 h-16 mt-2 rounded"
+                            />
+                        )}
+                        {offer.points && <p className="text-gray-600">Points: {offer.points}</p>}
+                        {offer.expiryDate && (
+                            <p className="text-gray-600">Expiry Date: {offer.expiryDate}</p>
+                        )}
+                        </div>
+                        <div className="space-x-2">
+                        <button
+                            onClick={() => {
+                            setForm(offer); // Populate the form with this offer's data for editing
+                            setEditingOffer(offer); // Set the offer being edited
+                            }}
+                            className="py-3 px-4 bg-btnColor rounded-lg duration-75 hover:bg-btnColorHover"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => handleDelete(offer.id)}
+                            className="py-3 px-4 bg-deleteColor rounded-lg duration-75 hover:bg-deleteColorHover"
+                        >
+                            Delete
+                        </button>
+                        </div>
+                    </li>
+                    ))}
+                </ul>
+                )}
+            </div>
+            </div>
+        </div>
         </div>
     );
     };
