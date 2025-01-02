@@ -1,16 +1,9 @@
     import { useState, useEffect } from "react";
-    import axios from "axios";
+    import axios from '../api/axiosInstance';
 
     const SuperAdminDashboard = () => {
     const [offers, setOffers] = useState([
-        {
-            id:1,
-            title: "CSC",
-            description: "ScScSC",
-            image: null, // Store image file instead of URL
-            points: "SCSc",
-            expiryDate: "Scsc",
-        }
+        
     ]); // State to store offers
     const [form, setForm] = useState({
         title: "",
@@ -24,7 +17,7 @@
     // Fetch offers from the backend
     useEffect(() => {
         axios
-        .get("http://localhost:3000/api/offers")
+        .get("/api/offers")
         .then((response) => {
             const transformedOffers = response.data.map((offer) => ({
             ...offer,
@@ -79,7 +72,7 @@
         if (editingOffer) {
             // Update existing offer
             response = await axios.put(
-            `http://localhost:3000/api/offers/${editingOffer.id}`,
+            `/api/offers/${editingOffer.id}`,
             formData,
             {
                 headers: {
@@ -95,11 +88,11 @@
         } else {
             // Add new offer
             response = await axios.post(
-            "http://localhost:3000/api/offers",
+            "/api/offers",
             formData,
             {
                 headers: {
-                "Content-Type": "multipart/form-data",
+                    "Content-Type": "multipart/form-data",
                 },
             }
             );
@@ -115,8 +108,8 @@
     // Handle offer deletion
     const handleDelete = async (id) => {
         try {
-        await axios.delete(`http://localhost:3000/api/offers/${id}`);
-        setOffers(offers.filter((offer) => offer.id !== id));
+        await axios.delete(`/api/offers/${id}`);
+        setOffers(offers.filter((offer) => offer._id !== id));
         } catch (error) {
         console.error("Error deleting offer:", error);
         }
@@ -228,7 +221,7 @@
                         <p>{offer.description}</p>
                         {offer.image && (
                             <img
-                            src={offer.image}
+                            src={`http://localhost:3000${offer.imageUrl}`}
                             alt="Offer"
                             className="w-16 h-16 mt-2 rounded"
                             />
@@ -249,7 +242,7 @@
                             Edit
                         </button>
                         <button
-                            onClick={() => handleDelete(offer.id)}
+                            onClick={() => handleDelete(offer._id)}
                             className="py-3 px-4 bg-deleteColor rounded-lg duration-75 hover:bg-deleteColorHover"
                         >
                             Delete
