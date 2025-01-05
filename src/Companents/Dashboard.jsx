@@ -208,7 +208,7 @@ const Dashboard = () => {
                     <button
                         className="btn btn-success mb-3"
                         onClick={() => {
-                          navigate('/register')
+                            navigate('/register')
                         }}
                     >
                         Add New admin <i className="pi pi-plus"></i>
@@ -233,9 +233,9 @@ const Dashboard = () => {
                                 paddingLeft: '3em',
                             }}
                             style={{
-                               
+                                
                                 width: '11em'
-                             }}
+                            }}
                         ></Column>
                     </DataTable>
                 )}

@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#16b91a',
+        primaryColor: '#16b91a',
         btnColor: '#81c784',
         btnColorHover: '#81c745',
-        textColor: '#ffff',
+        TextColor: '#ffff',
         textInput: '#000',
         deleteColor: '#ef4444',
         deleteColorHover: '#ef4422',
