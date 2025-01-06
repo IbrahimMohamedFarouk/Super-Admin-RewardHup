@@ -1,33 +1,28 @@
 import { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
+import { useNavigate } from 'react-router-dom';
 
 const MarketDashboard = () => {
-    const [markets, setMarkets] = useState([{
-        id:1,
-        username: "hema",
-        password: "dldmmdml",
-        email: "slmsms",
-        imageUrl: "lmsmls",
-        phone: "lmsms",
-        points: "ss,",
-        industryType: ",s;s,",
-    }]); // State to store markets
+    const navigate = useNavigate();
+    const [markets, setMarkets] = useState([]);
+    const [query, setQuery] = useState('');
+    const [response, setResponse] = useState({}); // State to store markets
     const [form, setForm] = useState({
         username: "",
         password: "",
         email: "",
-        imageUrl: "",
-        phone: "",
+        image: null,
+        phonenumber: "",
         points: "",
         industryType: "",
     });
 
     // Fetch markets from the backend
     useEffect(() => {
-        // axios
-        //   .get("/api/markets")
-        //   .then((response) => setMarkets(response.data))
-        //   .catch((error) => console.error("Error fetching markets:", error));
+        axios
+          .get("/superadmin/thirdparties")
+          .then((response) => setMarkets(response.data))
+          .catch((error) => console.error("Error fetching markets:", error));
     }, []);
 
     // Handle input change
@@ -36,15 +31,67 @@ const MarketDashboard = () => {
         setForm({ ...form, [name]: value });
     };
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+        setForm({ ...form, image: file });
+        }
+    };
+
+    // Handle image drag and drop
+    const handleImageDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+        setForm({ ...form, image: file });
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleInputChange = (e) => {
+        setQuery(e.target.value);
+    };
+
+    const handleSearch = async (e) => {
+        e.preventDefault(); // Prevent form reload
+        try {
+            const response = await axios.get(`/superadmin/thirdparty/search?q=${query}`);
+            setMarkets(response.data); // Update products with fetched data
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
     // Add Market
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("/api/markets", form);
+            const formData = new FormData();
+            formData.append("username", form.username);
+            formData.append("password", form.password);
+            formData.append("email", form.email);
+            formData.append("image", form.image); // Append the image file
+            formData.append("phonenumber", form.phonenumber);
+            formData.append("points", form.points);
+            formData.append("industrytype", form.industryType);
+
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+            const response = await axios.post("/superadmin/thirdparty", formData, {
+                headers: {
+                "Content-Type": "multipart/form-data",
+                },
+            });
             setMarkets([...markets, response.data]);
-            setForm({ username: "", password: "", email: "", imageUrl: "", phone: "", points: "", industryType: "" }); // Reset form
+            setForm({ username: "", password: "", email: "", image: null, phonenumber: "", points: "", industryType: "" }); // Reset form
         } catch (error) {
-            console.error("Error adding market:", error);
+            setResponse({
+                success : false,
+                message : error.response?.data?.message || "An error occurred while adding the market."
+            })
         }
     };
 
@@ -70,6 +117,14 @@ const MarketDashboard = () => {
                 </div>
                 <div className="w-full">
                     <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Market Dashboard</h1>
+                    <div className="justify-between items-center mb-6">
+                        <button
+                            onClick={() => navigate("/")}
+                            className="bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
+                        >
+                            Go to Home
+                        </button>
+                        </div>
                     <form onSubmit={handleSubmit} className="mb-6">
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Username</label>
@@ -108,22 +163,31 @@ const MarketDashboard = () => {
                         </div>
 
                         <div className="mb-4">
-                            <label className="block text-TextColor mb-2">Image URL</label>
-                            <input
-                                type="text"
-                                name="imageUrl"
-                                value={form.imageUrl}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border rounded text-textInput"
-                            />
+                            <label className="block text-TextColor mb-2">Image</label>
+                            <div
+                                className="w-full px-3 py-2 border rounded bg-gray-50 text-center cursor-pointer"
+                                onDrop={handleImageDrop}
+                                onDragOver={handleDragOver}
+                            >
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="hidden"
+                                    id="imageInput"
+                                />
+                                <label htmlFor="imageInput" className="cursor-pointer text-textInput">
+                                    {form.image ? form.image.name : "Click to upload or drag and drop an image here"}
+                                </label>
+                            </div>
                         </div>
-
+                    
                         <div className="mb-4">
-                            <label className="block text-TextColor mb-2">Phone</label>
+                            <label className="block text-TextColor mb-2">Phone number</label>
                             <input
                                 type="text"
-                                name="phone"
-                                value={form.phone}
+                                name="phonenumber"
+                                value={form.phonenumber}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 border rounded text-textInput"
                             />
@@ -151,7 +215,15 @@ const MarketDashboard = () => {
                                 required
                             />
                         </div>
-
+                        {response.message && (
+                            <div
+                                className={`p-4 mb-4 rounded ${
+                                    response.success ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                }`}
+                            >
+                                {response.message}
+                            </div>
+                        )}
                         <button
                             type="submit"
                             className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
@@ -163,6 +235,27 @@ const MarketDashboard = () => {
                     {/* Markets List */}
                     <div>
                         <h2 className="text-xl font-bold mb-4 text-TextColor">Markets</h2>
+                        <form onSubmit={handleSearch} style={{ marginBottom: '20px' }}>
+                            <input
+                                type="text"
+                                value={query}
+                                onChange={handleInputChange}
+                                placeholder="Search for markets..."
+                                style={{
+                                    padding: '8px',
+                                    width: '300px',
+                                    marginRight: '10px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '8px',
+                                    height: '39px',
+                                }}
+                            />
+                            <button
+                                className="btn btn-success mb-3"
+                            >
+                                Search
+                            </button>
+                        </form>
                         {markets.length === 0 ? (
                             <p className="text-TextColor">No markets available.</p>
                         ) : (
@@ -175,12 +268,12 @@ const MarketDashboard = () => {
                                         <div>
                                             <h3 className="text-lg font-bold">{market.username}</h3>
                                             <p>Email: {market.email}</p>
-                                            <p>Phone: {market.phone}</p>
+                                            <p>Phone number: {market.phonenumber}</p>
                                             <p>Industry: {market.industryType}</p>
                                             {market.points && <p>Points: {market.points}</p>}
                                             {market.imageUrl && (
                                                 <img
-                                                    src={market.imageUrl}
+                                                    src={`http://localhost:3000${market.imageUrl}`}
                                                     alt="Market"
                                                     className="w-16 h-16 mt-2 rounded"
                                                 />

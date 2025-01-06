@@ -10,17 +10,14 @@ import { jwtDecode } from 'jwt-decode';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useNavigate } from 'react-router-dom';
-// import axi from "axios";
-// import { ConfirmDialog } from 'primereact/confirmdialog';
-// import { confirmDialog } from 'primereact/confirmdialog';
-// import { Dialog } from 'primereact/dialog';
+
 
 window.Buffer = Buffer;
 const Dashboard = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]); // State to store fetched data
     const [loading, setLoading] = useState(true); // State for loading indicator
-
+    const [query, setQuery] = useState('');
     const [showDialog, setShowDialog] = useState(false);
     const [dialogType, setDialogType] = useState(''); // 'add', 'edit', or 'delete'
     const [selectedProduct, setSelectedProduct] = useState(null); // For edit or delete
@@ -58,6 +55,15 @@ const Dashboard = () => {
         };
     }, []); // Empty dependency array to run on component mount only
 
+    const handleSearch = async (e) => {
+        e.preventDefault(); // Prevent form reload
+        try {
+            const response = await axios.get(`superadmin/admin/search?q=${query}`);
+            setProducts(response.data); // Update products with fetched data
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
     const handleSave = async () => {
     if (dialogType === 'edit') {
             // Call backend API to update the user
@@ -85,6 +91,9 @@ const Dashboard = () => {
             console.error('Error resetting password:', error);
         }
         fetchProducts();
+    };
+    const handleInputChange = (e) => {
+        setQuery(e.target.value);
     };
 
     const confirmResetPassword = (rowData) => {
@@ -189,11 +198,33 @@ const Dashboard = () => {
         });
     };
     return (
+        
+        <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
+        <div className=" mx-auto py-6 text-textColor flex items-center justify-center flex-col">
+   
+        <div className="w-[70%] flex items-center justify-center pr-20">
+            <img
+                src="/rewardhup-high-resolution-logo-transparent.png"
+                alt="logo"
+                className="w-[100%]"
+            />
+            </div>
         <div className="dashboard text-center p-4">
-            <h1>Hello</h1>
-            <button className="btn btn-danger mb-3" onClick={confirmLogout}>
-                Logout <i className="pi pi-sign-out"></i>
-            </button>
+            
+            <div className="flex justify-between items-center mb-6">
+                {/* Home Button */}
+                <button
+                    onClick={() => navigate('/')}
+                    className="bg-btnColor text-white px-4 py-2 rounded-lg hover:bg-[#0c7810] transition-all duration-300"
+                >
+                    Go to Home
+                </button>
+
+                {/* Logout Button */}
+                <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-300" onClick={confirmLogout}>
+                    Logout <i className="pi pi-sign-out"></i>
+                </button>
+            </div>
 
             {/* Confirm Dialog */}
             <ConfirmDialog
@@ -213,6 +244,27 @@ const Dashboard = () => {
                     >
                         Add New admin <i className="pi pi-plus"></i>
                     </button>
+                    <form onSubmit={handleSearch} style={{ marginBottom: '20px' }}>
+                <input
+                    type="text"
+                    value={query}
+                    onChange={handleInputChange}
+                    placeholder="Search for admin..."
+                    style={{
+                        padding: '8px',
+                        width: '300px',
+                        marginRight: '10px',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        height: '39px',
+                    }}
+                />
+                <button
+                    className="btn btn-success mb-3"
+                >
+                    Search
+                </button>
+            </form>
                 </div>
                 {loading ? (
                     <p>Loading...</p>
@@ -240,7 +292,9 @@ const Dashboard = () => {
                     </DataTable>
                 )}
             </div>
-
+            </div>
+                </div>
+               
             {/* Dialog Component */}
             <Dialog
                 className="custom-dialog"

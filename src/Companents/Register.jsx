@@ -22,7 +22,7 @@
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        const response = await axios.post("http://localhost:3000/admin/signup", form);
+        const response = await axios.post("/admin/signup", form);
         console.log(response.data);
         navigate("/dashboard");
         } catch (error) {
@@ -45,6 +45,14 @@
             <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">
                 Add Admin
             </h1>
+                <div className="justify-between items-center mb-6">
+                        <button
+                            onClick={() => navigate("/")}
+                            className="bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
+                        >
+                            Go to Home
+                        </button>
+                </div>
             <form onSubmit={handleSubmit} className="mb-6">
                 <div className="mb-4">
                 <label htmlFor="username" className="block text-TextColor mb-2">
@@ -93,8 +101,8 @@
                     className="w-full px-3 py-2 border rounded text-textInput"
                     required
                 />
-                {errors.firstname && (
-                    <p className="text-red-500 text-sm mt-1">{errors.firstname}</p>
+                {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
                 )}
                 </div>
                 <div className="mb-4">
@@ -110,8 +118,8 @@
                     className="w-full px-3 py-2 border rounded text-textInput"
                     required
                 />
-                {errors.lastname && (
-                    <p className="text-red-500 text-sm mt-1">{errors.lastname}</p>
+                {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
                 )}
                 </div>
                 <div className="mb-4">

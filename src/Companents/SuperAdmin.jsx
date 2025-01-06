@@ -13,6 +13,10 @@ import { useNavigate } from "react-router-dom";
         navigate("/register")
     }
 
+    const handleAdminDashboard=()=>{
+        navigate("/dashboard")
+    }
+
     return (
         <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
         <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
@@ -42,7 +46,7 @@ import { useNavigate } from "react-router-dom";
             <button onClick={handleAddAdmin} className="py-3 px-4 bg-btnColor rounded-lg hover:bg-btnColorHover text-white">
                 Add Admin
             </button>
-            <button className="py-3 px-4 bg-btnColor rounded-lg hover:bg-btnColorHover text-white">
+            <button onClick={handleAdminDashboard} className="py-3 px-4 bg-btnColor rounded-lg hover:bg-btnColorHover text-white">
                 Show Admins
             </button>
             </div>

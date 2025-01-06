@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
-
+import { useNavigate } from 'react-router-dom';
 
 const OffersDashboard = () => {
+    const navigate = useNavigate();
     const [offers, setOffers] = useState([]); // State to store offers
     const [form, setForm] = useState({
         title: "",
@@ -10,9 +11,9 @@ const OffersDashboard = () => {
         image: null, // Store image file instead of URL
         points: "",
         expiryDate: "",
-        marketName: "", // Added market name
+        thirdparty: "", // Added market name
     });
-
+    const [response, setResponse] = useState({});
     // Fetch offers from the backend
     useEffect(() => {
         axios
@@ -62,7 +63,7 @@ const OffersDashboard = () => {
         formData.append("description", form.description);
         formData.append("points", form.points);
         formData.append("expiryDate", form.expiryDate);
-        formData.append("marketName", form.marketName); // Include market name in the request
+        formData.append("thirdparty", form.thirdparty); // Include market name in the request
         if (form.image) {
         formData.append("image", form.image);
         }
@@ -74,9 +75,12 @@ const OffersDashboard = () => {
             },
         });
         setOffers([...offers, response.data]);
-        setForm({ title: "", description: "", image: null, points: "", expiryDate: "", marketName: "" }); // Reset form
+        setForm({ title: "", description: "", image: null, points: "", expiryDate: "", thirdparty: "" }); // Reset form
         } catch (error) {
-        console.error("Error adding offer:", error);
+            setResponse({
+                success: false,
+                message: error.response?.data?.message || "An error occurred while adding the offer.",
+            });
         }
     };
 
@@ -101,6 +105,14 @@ return (
             </div>
             <div className="w-full">
             <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Offers Dashboard</h1>
+            <div className="justify-between items-center mb-6">
+                        <button
+                            onClick={() => navigate("/")}
+                            className="bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
+                        >
+                            Go to Home
+                        </button>
+                        </div>
             <form onSubmit={handleSubmit} className="mb-6">
                 <div className="mb-4">
                 <label className="block text-TextColor mb-2">Title</label>
@@ -129,8 +141,8 @@ return (
                 <label className="block text-TextColor mb-2">Market Name</label>
                 <input
                     type="text"
-                    name="marketName"
-                    value={form.marketName}
+                    name="thirdparty"
+                    value={form.thirdparty}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border rounded text-textInput"
                     required
@@ -178,7 +190,15 @@ return (
                     className="w-full px-3 py-2 border rounded text-textInput"
                 />
                 </div>
-
+                {response.message && (
+                    <div
+                        className={`p-4 mb-4 rounded ${
+                            response.success ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                        }`}
+                    >
+                        {response.message}
+                    </div>
+                )}
                 <button
                 type="submit"
                 className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
@@ -202,7 +222,8 @@ return (
                         <div>
                         <h3 className="text-lg font-bold">{offer.title}</h3>
                         <p>{offer.description}</p>
-                        <p className=""> {offer.marketName}</p>
+                        <p className=""> {offer.thirdPartyId}</p>
+                        {}
                         {offer.image && (
                             <img
                             src={`http://localhost:3000${offer.imageUrl}`}

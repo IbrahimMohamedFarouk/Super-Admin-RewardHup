@@ -21,7 +21,7 @@ const Login = () => {
                 localStorage.setItem("refreshToken", refreshToken);
                 console.log("Login Done", accessToken);
                 toast("Login successful!");
-                navigate("dashboard")
+                navigate("/")
             } catch (error) {
                 console.error("Login failed:", error.response ? error.response.data : error.message);
                 toast("Invalid username or password");

@@ -21,11 +21,13 @@ function App() {
             <Route path="/dashboard" element={ <ProtectedRoute>
                                                   <Dashboard />
                                               </ProtectedRoute>} />
-            <Route path="/offerDashBoard" element={<OffersDashboard />} />
-            <Route path="/marketDashBoard" element={<MarketDashboard />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Login />} />
-            <Route path="/superadmin" element={<SuperAdminDashboard />} />
+            <Route path="/offerDashBoard" element={<ProtectedRoute>
+                                                    <OffersDashboard />
+                                                    </ProtectedRoute>} />
+            <Route path="/marketDashBoard" element={<ProtectedRoute><MarketDashboard /></ProtectedRoute>} />
+            <Route path="/register" element={<ProtectedRoute><Register /></ProtectedRoute>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
       </div>
