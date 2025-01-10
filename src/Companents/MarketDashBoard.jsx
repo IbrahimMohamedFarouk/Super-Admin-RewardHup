@@ -7,6 +7,9 @@ const MarketDashboard = () => {
     const [markets, setMarkets] = useState([]);
     const [query, setQuery] = useState('');
     const [errors, setErrors] = useState({});
+    const [editingMarketId, setEditingMarketId] = useState(null); // ID of the market being edited
+
+
 
     const [response, setResponse] = useState({}); // State to store markets
     const [form, setForm] = useState({
@@ -23,9 +26,9 @@ const MarketDashboard = () => {
     // Fetch markets from the backend
     useEffect(() => {
         axios
-          .get("/superadmin/thirdparties")
-          .then((response) => setMarkets(response.data))
-          .catch((error) => console.error("Error fetching markets:", error));
+            .get("/superadmin/thirdparties")
+            .then((response) => setMarkets(response.data))
+            .catch((error) => console.error("Error fetching markets:", error));
     }, []);
 
     // Handle input change
@@ -40,7 +43,20 @@ const MarketDashboard = () => {
         setForm({ ...form, image: file });
         }
     };
-
+    const handleEdit = (market) => {
+        setEditingMarketId(market._id);
+        setForm({
+            username: market.username,
+            password: "", // Keep empty for security purposes
+            email: market.email,
+            image: null, // If image editing is optional
+            phonenumber: market.phonenumber,
+            points: market.points || "",
+            industryType: market.industryType,
+            website: market.website,
+        });
+    };
+    
     // Handle image drag and drop
     const handleImageDrop = (e) => {
         e.preventDefault();
@@ -70,37 +86,62 @@ const MarketDashboard = () => {
     // Add Market
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         try {
             const formData = new FormData();
             formData.append("username", form.username);
             formData.append("password", form.password);
             formData.append("email", form.email);
-            formData.append("image", form.image); // Append the image file
+            if (form.image) formData.append("image", form.image); // Add image only if it exists
             formData.append("phonenumber", form.phonenumber);
             formData.append("points", form.points);
             formData.append("industrytype", form.industryType);
             formData.append("website", form.website);
-
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
+    
+            if (editingMarketId) {
+                // Update market
+                const response = await axios.put(`/superadmin/thirdparty/${editingMarketId}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+    
+                setMarkets((prevMarkets) =>
+                    prevMarkets.map((market) =>
+                        market._id === editingMarketId ? { ...market, ...response.data } : market
+                    )
+                );
+                setEditingMarketId(null); // Reset editing state
+            } else {
+                // Add new market
+                const response = await axios.post("/superadmin/thirdparty", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+    
+                setMarkets([...markets, response.data]);
             }
-            const response = await axios.post("/superadmin/thirdparty", formData, {
-                headers: {
-                "Content-Type": "multipart/form-data",
-                },
-            });
-            setMarkets([...markets, response.data]);
-            setForm({ username: "", password: "", email: "", image: null, phonenumber: "", points: "", industryType: "", website: "" }); // Reset form
+    
+            setForm({
+                username: "",
+                password: "",
+                email: "",
+                image: null,
+                phonenumber: "",
+                points: "",
+                industryType: "",
+                website: "",
+            }); // Reset form
         } catch (error) {
             setResponse({
-                success : false,
-                message : error.response?.data?.message || "An error occurred while adding the market."
-            })
-            setErrors(error.response.data.errors || {});
-
+                success: false,
+                message: error.response?.data?.message || "An error occurred.",
+            });
+            setErrors(error.response?.data?.errors || {});
         }
     };
-
+    
     // Handle market deletion
     const handleDelete = async (id) => {
         try {
@@ -251,8 +292,9 @@ const MarketDashboard = () => {
                             type="submit"
                             className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
                         >
-                            Add Store
+                            {editingMarketId ? "Update Store" : "Add Store"}
                         </button>
+
                     </form>
 
                     {/* Markets List */}
@@ -303,12 +345,21 @@ const MarketDashboard = () => {
                                                 />
                                             )}
                                         </div>
-                                        <button
-                                            onClick={() => handleDelete(market._id)}
-                                            className="py-3 px-4 bg-deleteColor rounded-lg duration-75 hover:bg-deleteColorHover"
-                                        >
-                                            Delete
-                                        </button>
+                                        <div className="mr-4">
+                                            <button 
+                                                onClick={() => handleDelete(market._id)}
+                                                className="mr-4 py-3 px-4 bg-deleteColor rounded-lg duration-75 hover:bg-deleteColorHover"
+                                            >
+                                                Delete
+                                            </button>
+                                            <button
+                                                onClick={() => handleEdit(market)}
+                                                className="py-3 px-4 bg-blue-500 text-white rounded-lg duration-75 hover:bg-blue-600"
+                                            >
+                                                Edit
+                                            </button>
+                                        </div>
+
                                     </li>
                                 ))}
                             </ul>
