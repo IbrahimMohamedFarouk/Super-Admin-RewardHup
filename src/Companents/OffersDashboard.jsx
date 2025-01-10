@@ -104,7 +104,7 @@ return (
             />
             </div>
             <div className="w-full">
-            <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Offers Dashboard</h1>
+            <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Manage Offers</h1>
             <div className="justify-between items-center mb-6">
                         <button
                             onClick={() => navigate("/")}

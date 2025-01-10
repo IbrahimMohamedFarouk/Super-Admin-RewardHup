@@ -269,7 +269,7 @@ const Dashboard = () => {
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
-                    <DataTable value={products} responsiveLayout="scroll">
+                    <DataTable value={products} responsiveLayout="scroll" className="bg-primaryColor">
                         <Column className="p-2" field="username" header="Username"></Column>
                         <Column field="firstname" header="First name"></Column>
                         <Column field="lastname" header="Last name"></Column>

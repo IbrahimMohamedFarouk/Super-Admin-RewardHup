@@ -6,6 +6,8 @@ const MarketDashboard = () => {
     const navigate = useNavigate();
     const [markets, setMarkets] = useState([]);
     const [query, setQuery] = useState('');
+    const [errors, setErrors] = useState({});
+
     const [response, setResponse] = useState({}); // State to store markets
     const [form, setForm] = useState({
         username: "",
@@ -15,6 +17,7 @@ const MarketDashboard = () => {
         phonenumber: "",
         points: "",
         industryType: "",
+        website: "",
     });
 
     // Fetch markets from the backend
@@ -76,6 +79,7 @@ const MarketDashboard = () => {
             formData.append("phonenumber", form.phonenumber);
             formData.append("points", form.points);
             formData.append("industrytype", form.industryType);
+            formData.append("website", form.website);
 
             for (let [key, value] of formData.entries()) {
                 console.log(key, value);
@@ -86,19 +90,21 @@ const MarketDashboard = () => {
                 },
             });
             setMarkets([...markets, response.data]);
-            setForm({ username: "", password: "", email: "", image: null, phonenumber: "", points: "", industryType: "" }); // Reset form
+            setForm({ username: "", password: "", email: "", image: null, phonenumber: "", points: "", industryType: "", website: "" }); // Reset form
         } catch (error) {
             setResponse({
                 success : false,
                 message : error.response?.data?.message || "An error occurred while adding the market."
             })
+            setErrors(error.response.data.errors || {});
+
         }
     };
 
     // Handle market deletion
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`/api/markets/${id}`);
+            await axios.delete(`/superadmin/thirdparty/${id}`);
             setMarkets(markets.filter((market) => market._id !== id));
         } catch (error) {
             console.error("Error deleting market:", error);
@@ -116,7 +122,7 @@ const MarketDashboard = () => {
                     />
                 </div>
                 <div className="w-full">
-                    <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Market Dashboard</h1>
+                    <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Manage Stores</h1>
                     <div className="justify-between items-center mb-6">
                         <button
                             onClick={() => navigate("/")}
@@ -137,7 +143,9 @@ const MarketDashboard = () => {
                                 required
                             />
                         </div>
-
+                        {errors.username && (
+                        <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+                        )}
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Password</label>
                             <input
@@ -149,7 +157,8 @@ const MarketDashboard = () => {
                                 required
                             />
                         </div>
-
+                        {errors.password && (
+                        <p className="text-red-500 text-sm mt-1">{errors.password}</p>)}
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Email</label>
                             <input
@@ -181,7 +190,7 @@ const MarketDashboard = () => {
                                 </label>
                             </div>
                         </div>
-                    
+                            
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Phone number</label>
                             <input
@@ -192,7 +201,8 @@ const MarketDashboard = () => {
                                 className="w-full px-3 py-2 border rounded text-textInput"
                             />
                         </div>
-
+                        {errors.phonenumber && (
+                        <p className="text-red-500 text-sm mt-1">{errors.phonenumber}</p>)}
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Points (Optional)</label>
                             <input
@@ -215,6 +225,19 @@ const MarketDashboard = () => {
                                 required
                             />
                         </div>
+                        {errors.industryType && (
+                        <p className="text-red-500 text-sm mt-1">{errors.industryType}</p>)}
+                        <div className="mb-4">
+                            <label className="block text-TextColor mb-2">Website</label>
+                            <input
+                                type="website"
+                                name="website"
+                                value={form.website}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border rounded text-textInput"
+                                required
+                            />
+                        </div>
                         {response.message && (
                             <div
                                 className={`p-4 mb-4 rounded ${
@@ -228,19 +251,19 @@ const MarketDashboard = () => {
                             type="submit"
                             className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
                         >
-                            Add Market
+                            Add Store
                         </button>
                     </form>
 
                     {/* Markets List */}
                     <div>
-                        <h2 className="text-xl font-bold mb-4 text-TextColor">Markets</h2>
+                        <h2 className="text-xl font-bold mb-4 text-TextColor">Stores</h2>
                         <form onSubmit={handleSearch} style={{ marginBottom: '20px' }}>
                             <input
                                 type="text"
                                 value={query}
                                 onChange={handleInputChange}
-                                placeholder="Search for markets..."
+                                placeholder="Search for stores..."
                                 style={{
                                     padding: '8px',
                                     width: '300px',
@@ -262,7 +285,7 @@ const MarketDashboard = () => {
                             <ul className="space-y-4">
                                 {markets.map((market) => (
                                     <li
-                                        key={market.id}
+                                        key={market._id}
                                         className="p-4 border rounded shadow flex justify-between items-center text-TextColor"
                                     >
                                         <div>
@@ -270,6 +293,7 @@ const MarketDashboard = () => {
                                             <p>Email: {market.email}</p>
                                             <p>Phone number: {market.phonenumber}</p>
                                             <p>Industry: {market.industryType}</p>
+                                            <p>Website: {market.website}</p>
                                             {market.points && <p>Points: {market.points}</p>}
                                             {market.imageUrl && (
                                                 <img

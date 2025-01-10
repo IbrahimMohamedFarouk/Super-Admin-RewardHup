@@ -34,12 +34,12 @@ import { useNavigate } from "react-router-dom";
         <div className="mb-6 grid  grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Group 1: Offers */}
             <button onClick={handleOffersDashboard} className="py-3 px-4 bg-btnColor rounded-lg hover:bg-btnColorHover text-white">
-                Offers Dashboard
+                Manage Offers
             </button>
 
             {/* Group 2: Markets */}
             <button onClick={handleMarketDashboard} className="py-3 px-4 bg-btnColor rounded-lg hover:bg-btnColorHover text-white">
-                Market Dashboard
+                Manage Stores
             </button>
 
             {/* Group 3: Admins */}
