@@ -47,8 +47,8 @@ import axios from "../api/axiosInstance";
         });
     };
     return (
-        <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
-        <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
+        <div className="min-h-screen bg-primaryColor h-full w-full py-2 px-4 rounded-lg">
+        <div className="max-w w-full max-w-none mx-auto py-6 text-textColor flex items-center justify-center flex-col">
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
                 src="/rewardhup-high-resolution-logo-transparent.png"
@@ -58,7 +58,7 @@ import axios from "../api/axiosInstance";
             </div>
             <div className="w-full">
             <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Admin Panel</h1>
-            <div className="justify-between items-center mb-6">
+            <div className="flex justify-center items-center mb-6">
                 {/* Logout Button */}
                 <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-center transition-all duration-300" onClick={confirmLogout}>
                     Logout <i className="pi pi-sign-out"></i>

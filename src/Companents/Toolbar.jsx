@@ -50,7 +50,7 @@ const Toolbar = () => {
     });
 };
   return (
-<div className="fixed top-0 left-0 w-full bg-[#F0F0F0] text-[#16b91a] py-2 px-4 z-50">
+<div className="fixed top-0 left-0 w-full bg-[#75975e] text-white py-2 px-4 z-50">
     <div className="flex justify-between items-center">
         {/* Centered Navigation Buttons */}
         <div className="flex space-x-6 mx-auto">

@@ -11,6 +11,7 @@ import OffersDashboard from "./Companents/OffersDashboard";
 import MarketDashboard from "./Companents/MarketDashBoard";
 import Toolbar from "./Companents/Toolbar";
 import { ConfirmDialog } from 'primereact/confirmdialog'; // Import ConfirmDialog
+// import Logo from "./Companents/Logo";
 function App() {
 
   return (
@@ -35,6 +36,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Toolbar />
+                {/* <Logo /> */}
                 <OffersDashboard />
               </ProtectedRoute>
             }

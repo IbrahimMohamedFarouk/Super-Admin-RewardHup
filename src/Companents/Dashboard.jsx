@@ -170,8 +170,8 @@ const Dashboard = () => {
    
     return (
         
-        <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
-        <div className=" mx-auto py-6 text-textColor flex items-center justify-center flex-col">
+        <div className="min-h-screen bg-primaryColor h-full w-full py-2 px-4 rounded-lg">
+        <div className=" max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
    
         <div className="w-[70%] flex items-center justify-center pr-20">
             <img
