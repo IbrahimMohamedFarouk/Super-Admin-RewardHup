@@ -7,7 +7,6 @@ import './Dashboard.css';
 import axios from '../api/axiosInstance';
 import { Buffer } from 'buffer';
 import { jwtDecode } from 'jwt-decode';
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useNavigate } from 'react-router-dom';
 
@@ -122,27 +121,7 @@ const Dashboard = () => {
         setLoading(false);
     };
 
-    const handleLogout = async () => {
-        try {
-            const refreshToken = localStorage.getItem("refreshToken");
-            if (!refreshToken) {
-                console.error('No refresh token found');
-                return;
-            }
-            console.log("Refresh token:", refreshToken);
-            const response = await axios.delete('/admin/logout', {
-                data: { token: refreshToken },
-            });
-    
-            if (response.status === 200) {
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
-                window.location.href = '/';
-            }
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    };
+   
 
     const actionsTemplate = (rowData) => {
         return (
@@ -188,15 +167,7 @@ const Dashboard = () => {
             </div>
         );
     };
-    const confirmLogout = () => {
-        confirmDialog({
-            message: 'Are you sure you want to log out?',
-            header: 'Logout Confirmation',
-            icon: 'pi pi-exclamation-triangle',
-            accept: handleLogout, // Call handleLogout on confirmation
-            reject: () => console.log('Logout cancelled'), // Optional: handle rejection
-        });
-    };
+   
     return (
         
         <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
@@ -211,29 +182,17 @@ const Dashboard = () => {
             </div>
         <div className="dashboard text-center p-4">
             
-            <div className="flex justify-between items-center mb-6">
-                {/* Home Button */}
-                <button
-                    onClick={() => navigate('/')}
-                    className="bg-btnColor text-white px-4 py-2 rounded-lg hover:bg-[#0c7810] transition-all duration-300"
-                >
-                    Go to Home
-                </button>
-
-                {/* Logout Button */}
-                <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-300" onClick={confirmLogout}>
-                    Logout <i className="pi pi-sign-out"></i>
-                </button>
-            </div>
+        <div className="justify-between items-center mb-6">
+                        <button
+                            onClick={() => navigate("/")}
+                            className="bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
+                        >
+                            Go to Home
+                        </button>
+                        </div>
 
             {/* Confirm Dialog */}
-            <ConfirmDialog
-                style={{
-                    width: '50%', // Set consistent width
-                    borderRadius: '8px', // Rounded corners
-                }}
-                className="custom-confirm-dialog"
-            />
+            
             <div className="data-list">
                 <div className="add-user">
                     <button
@@ -269,7 +228,7 @@ const Dashboard = () => {
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
-                    <DataTable value={products} responsiveLayout="scroll" className="bg-primaryColor">
+                    <DataTable value={products} responsiveLayout="scroll" className="p-datatable-sm">
                         <Column className="p-2" field="username" header="Username"></Column>
                         <Column field="firstname" header="First name"></Column>
                         <Column field="lastname" header="Last name"></Column>

@@ -53,7 +53,7 @@ const Login = () => {
             </div>
             <div className="flex flex-col items-start gap-14 text-TextColor rounded-[5px] w-[300px] h-[300px]">
             <div className="w-full h-3 font-medium text-3xl py-1text-center">
-                <h1 className="text-3xl ">Super Admin Login</h1>
+                <h1 className="text-3xl ">Admin Panel</h1>
             </div>
             <div className=" w-full p-2 text-lg  h-[210px]">
                 <form onSubmit={proceedLogin}>

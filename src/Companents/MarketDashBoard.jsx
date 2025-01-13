@@ -100,7 +100,7 @@ const MarketDashboard = () => {
     
             if (editingMarketId) {
                 // Update market
-                const response = await axios.put(`/superadmin/thirdparty/${editingMarketId}`, formData, {
+                const response = await axios.put(`/superadmin/thirdparty/edit/${editingMarketId}`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
@@ -163,7 +163,7 @@ const MarketDashboard = () => {
                     />
                 </div>
                 <div className="w-full">
-                    <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Manage Stores</h1>
+                    <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Manage Vendors</h1>
                     <div className="justify-between items-center mb-6">
                         <button
                             onClick={() => navigate("/")}
@@ -299,7 +299,7 @@ const MarketDashboard = () => {
 
                     {/* Markets List */}
                     <div>
-                        <h2 className="text-xl font-bold mb-4 text-TextColor">Stores</h2>
+                        <h2 className="text-xl font-bold mb-4 text-TextColor">Vendors</h2>
                         <form onSubmit={handleSearch} style={{ marginBottom: '20px' }}>
                             <input
                                 type="text"
