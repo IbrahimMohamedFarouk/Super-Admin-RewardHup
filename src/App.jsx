@@ -13,12 +13,11 @@ import MarketDashboard from "./Companents/MarketDashBoard";
 function App() {
 
   return (
-      <>
       <div className="flex bg-white py-4 items-center justify-center font-[Roboto, sans-serif]">
       <ToastContainer></ToastContainer>
         <BrowserRouter>
           <Routes>
-            <Route path="/dashboard" element={ <ProtectedRoute>
+          <Route path="/dashboard" element={ <ProtectedRoute>
                                                   <Dashboard />
                                               </ProtectedRoute>} />
             <Route path="/offerDashBoard" element={<ProtectedRoute>
@@ -31,7 +30,6 @@ function App() {
           </Routes>
         </BrowserRouter>
       </div>
-    </>
   )
 }
 

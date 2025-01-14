@@ -18,11 +18,11 @@ import { useNavigate } from "react-router-dom";
     }
 
     return (
-        <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
+        <div className="min-h-screen bg-primaryColor text-center py-2 px-4 rounded-lg">
         <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
-                src="/rewardhup-high-resolution-logo-transparent.png"
+                src="/public/pixelcut-export (1).png"
                 alt="logo"
                 className="w-[100%]"
             />

@@ -43,10 +43,10 @@ const Login = () => {
     };
 
     return (
-        <div className="bg-primaryColor flex justify-center items-center gap-2 flex-col pb-4">
+        <div className="bg-primaryColor flex justify-center items-center gap-2 flex-col pb-4 w-[100%]">
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
-                src="/rewardhup-high-resolution-logo-transparent.png"
+                src="/public/pixelcut-export (1).png"
                 alt="logo"
                 className="w-[100%]"
             />

@@ -97,7 +97,7 @@ const MarketDashboard = () => {
             formData.append("points", form.points);
             formData.append("industrytype", form.industryType);
             formData.append("website", form.website);
-    
+
             if (editingMarketId) {
                 // Update market
                 const response = await axios.put(`/superadmin/thirdparty/${editingMarketId}`, formData, {
@@ -105,7 +105,6 @@ const MarketDashboard = () => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-    
                 setMarkets((prevMarkets) =>
                     prevMarkets.map((market) =>
                         market._id === editingMarketId ? { ...market, ...response.data } : market
@@ -157,7 +156,7 @@ const MarketDashboard = () => {
             <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
                 <div className="w-[70%] flex items-center justify-center pr-20">
                     <img
-                        src="/rewardhup-high-resolution-logo-transparent.png"
+                        src="/public/pixelcut-export (1).png"
                         alt="logo"
                         className="w-[100%]"
                     />

@@ -204,7 +204,7 @@ const Dashboard = () => {
    
         <div className="w-[70%] flex items-center justify-center pr-20">
             <img
-                src="/rewardhup-high-resolution-logo-transparent.png"
+                src="/public/pixelcut-export (1).png"
                 alt="logo"
                 className="w-[100%]"
             />
