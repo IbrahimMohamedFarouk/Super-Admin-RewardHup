@@ -43,17 +43,10 @@ const Login = () => {
     };
 
     return (
-<<<<<<< HEAD
-        <div className="bg-primaryColor flex justify-center items-center gap-2 flex-col pb-4 w-[100%]">
-            <div className="w-[70%] flex items-center justify-center pr-20">
-            <img
-                src="/public/pixelcut-export (1).png"
-=======
         <div className="bg-primaryColor h-full w-full flex justify-center  items-center gap-2 rounded-[50px] flex-col pb-4">
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
-                src="/logo.png"
->>>>>>> 912fc0da12457f2a9da63305329f9e1efcae0c15
+                src="/public/pixelcut-export (1).png"
                 alt="logo"
                 className="w-[100%]"
             />

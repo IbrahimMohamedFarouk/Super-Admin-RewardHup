@@ -47,13 +47,8 @@ import axios from "../api/axiosInstance";
         });
     };
     return (
-<<<<<<< HEAD
-        <div className="min-h-screen bg-primaryColor text-center py-2 px-4 rounded-lg">
+        <div className="min-h-screen h-full w-full bg-primaryColor text-center py-2 px-4 rounded-lg">
         <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
-=======
-        <div className="min-h-screen bg-primaryColor h-full w-full py-2 px-4 rounded-lg">
-        <div className="max-w w-full max-w-none mx-auto py-6 text-textColor flex items-center justify-center flex-col">
->>>>>>> 912fc0da12457f2a9da63305329f9e1efcae0c15
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
                 src="/public/pixelcut-export (1).png"
