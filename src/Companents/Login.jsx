@@ -46,7 +46,7 @@ const Login = () => {
         <div className="bg-primaryColor h-full w-full flex justify-center  items-center gap-2 rounded-[50px] flex-col pb-4">
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
-                src="/rewardhup-high-resolution-logo-transparent.png"
+                src="/logo.png"
                 alt="logo"
                 className="w-[100%]"
             />
