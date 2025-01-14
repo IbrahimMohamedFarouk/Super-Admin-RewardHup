@@ -43,19 +43,19 @@ const MarketDashboard = () => {
         setForm({ ...form, image: file });
         }
     };
-    const handleEdit = (market) => {
-        setEditingMarketId(market._id);
-        setForm({
-            username: market.username,
-            password: "", // Keep empty for security purposes
-            email: market.email,
-            image: null, // If image editing is optional
-            phonenumber: market.phonenumber,
-            points: market.points || "",
-            industryType: market.industryType,
-            website: market.website,
-        });
-    };
+    // const handleEdit = (market) => {
+    //     setEditingMarketId(market._id);
+    //     setForm({
+    //         username: market.username,
+    //         password: "", // Keep empty for security purposes
+    //         email: market.email,
+    //         image: null, // If image editing is optional
+    //         phonenumber: market.phonenumber,
+    //         points: market.points || "",
+    //         industryType: market.industryType,
+    //         website: market.website,
+    //     });
+    // };
     
     // Handle image drag and drop
     const handleImageDrop = (e) => {
@@ -100,7 +100,7 @@ const MarketDashboard = () => {
 
             if (editingMarketId) {
                 // Update market
-                const response = await axios.put(`/superadmin/thirdparty/${editingMarketId}`, formData, {
+                const response = await axios.put(`/superadmin/thirdparty/edit/${editingMarketId}`, form, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
@@ -152,7 +152,7 @@ const MarketDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
+        <div className="min-h-screen bg-primaryColor h-full w-full py-2 px-4 rounded-lg">
             <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
                 <div className="w-[70%] flex items-center justify-center pr-20">
                     <img
@@ -162,15 +162,15 @@ const MarketDashboard = () => {
                     />
                 </div>
                 <div className="w-full">
-                    <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Manage Stores</h1>
-                    <div className="justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">Manage Vendors</h1>
+                    <div className="flex justify-center items-center mb-6">
                         <button
                             onClick={() => navigate("/")}
                             className="bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
                         >
                             Go to Home
                         </button>
-                        </div>
+                    </div>
                     <form onSubmit={handleSubmit} className="mb-6">
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Username</label>
@@ -291,35 +291,31 @@ const MarketDashboard = () => {
                             type="submit"
                             className="w-full bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
                         >
-                            {editingMarketId ? "Update Store" : "Add Store"}
+                            {editingMarketId ? "Update Store" : "Add Vendor"}
                         </button>
 
                     </form>
 
                     {/* Markets List */}
                     <div>
-                        <h2 className="text-xl font-bold mb-4 text-TextColor">Stores</h2>
-                        <form onSubmit={handleSearch} style={{ marginBottom: '20px' }}>
+                        <div className="flex flex-col justify-center items-center mb-4">
+                        <h2 className="text-xl font-bold mb-4 text-TextColor text-center">Vendors</h2>
+                        <form onSubmit={handleSearch} className="flex flex-col items-center">
                             <input
                                 type="text"
                                 value={query}
                                 onChange={handleInputChange}
                                 placeholder="Search for stores..."
-                                style={{
-                                    padding: '8px',
-                                    width: '300px',
-                                    marginRight: '10px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '8px',
-                                    height: '39px',
-                                }}
+                                className="px-3 py-2 border border-gray-300 rounded-md mb-4 w-72"
                             />
                             <button
+                                type="submit"
                                 className="btn btn-success mb-3"
                             >
                                 Search
                             </button>
                         </form>
+                    </div>
                         {markets.length === 0 ? (
                             <p className="text-TextColor">No markets available.</p>
                         ) : (
@@ -351,12 +347,12 @@ const MarketDashboard = () => {
                                             >
                                                 Delete
                                             </button>
-                                            <button
+                                            {/* <button
                                                 onClick={() => handleEdit(market)}
                                                 className="py-3 px-4 bg-blue-500 text-white rounded-lg duration-75 hover:bg-blue-600"
                                             >
                                                 Edit
-                                            </button>
+                                            </button> */}
                                         </div>
 
                                     </li>

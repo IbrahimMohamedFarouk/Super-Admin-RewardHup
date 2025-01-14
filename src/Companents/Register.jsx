@@ -32,7 +32,7 @@
     };
 
     return (
-        <div className="min-h-screen bg-primaryColor py-2 px-4 rounded-lg">
+        <div className="min-h-screen bg-primaryColor h-full w-full py-2 px-4 rounded-lg">
         <div className="max-w-4xl mx-auto py-6 text-textColor flex items-center justify-center flex-col">
             <div className="w-[70%] flex items-center justify-center pr-20">
             <img
@@ -45,10 +45,10 @@
             <h1 className="text-2xl font-bold text-center mb-4 text-TextColor">
                 Add Admin
             </h1>
-                <div className="justify-between items-center mb-6">
+                <div className="flex justify-center items-center mb-6">
                         <button
                             onClick={() => navigate("/")}
-                            className="bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
+                            className="justify-between items-center bg-btnColor hover:bg-btnColorHover text-white py-2 px-4 rounded duration-75"
                         >
                             Go to Home
                         </button>
