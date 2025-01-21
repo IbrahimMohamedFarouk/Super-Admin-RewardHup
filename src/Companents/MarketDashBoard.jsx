@@ -210,7 +210,9 @@ const MarketDashboard = () => {
                                 required
                             />
                         </div>
-
+                        {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                        )}
                         <div className="mb-4">
                             <label className="block text-TextColor mb-2">Image</label>
                             <div
